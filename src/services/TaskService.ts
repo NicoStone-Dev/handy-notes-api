@@ -1,21 +1,27 @@
-import { Task } from "../models/Task.js";
+// import { User, UserCreationDTO } from '../models/User.js';
+// import { PrismaClient } from '@prisma/client';
+// import bcrypt from 'bcrypt';
 
+// const prisma = new PrismaClient();
 
-const tasksList : Task[] = [
-    new Task(1, "House Cleaning"),
-    new Task(2, "Computer Stuff")
-]
+// export class TaskService {
 
-export const taskService = {
+//     async createTask(userData: UserCreationDTO): Promise<User> {
+//         return await prisma.user.create({
+//             data: {
+//                 username: userData.username,
+//                 password: bcrypt.hash(userData.password, 10)
+//             }
+//         }
+//         )
+//     }
 
-    listAll : async():  Promise<Task[]> => {
-        return Promise.resolve(tasksList);
-    },
+//     async listTasks(): Promise<User[]> {
+//         return await prisma.user.listAll();
+//     }
 
-    findById: async(id: number): Promise<Task | null> => {
+//     async findTask(id: number): Promise<User[]> {
+//         return await prisma.task.(id);
+//     }
 
-        const task = tasksList.find(task => task.id === id);
-
-        return Promise.resolve(task || null);
-    }
-}
+// }

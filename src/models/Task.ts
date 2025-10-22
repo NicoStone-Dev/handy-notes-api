@@ -1,30 +1,13 @@
-import { Item } from "./Item.js";
+import { TaskItem } from "./TaskItem.js";
 
 export class Task {
-    private _id: number;
-    private _taskName: String;
-    public _items: Item[] = [];
-
-    constructor(id: number, taskName: String) {
-        this._id = id;
-        this._taskName = taskName;
+    constructor(
+        public readonly id: number,
+        public readonly taskCode: string,
+        public readonly createdDate: Date,
+        public title: String,
+        private _items: TaskItem[] = [],
+        private _taskedUserId: number,
+    ) {
     }
-
-    public get id(): number {
-        return this.id;
-    }
-
-    public get taskName(): String {
-        return this.taskName;
-    }
-
-    public set taskName(newTaskName: String){
-        this._taskName = newTaskName;
-    }
-}
-
-// This is the ts way of creating a dto interface like thingy
-export type TaskCreationDTO = {
-    taskName: String,
-    items: Item[]
 }
