@@ -1,24 +1,11 @@
 import { Request, Response } from "express";
-import { UserService } from "../services/UserService.js";
+import { UserRepository } from "../services/UserRepository.js";
 
-const userService = new UserService();
-
-export const createUser = async (req: Request, res: Response) => {
-    try {
-        const newUser = await userService.createUser(req.body);
-        res.send(res.status(201).json(newUser))
-    } catch (err) {
-        res.status(500).json({
-            error_message: 'Failed to create user',
-            error_type: err
-        })
-        console.log(err)
-    }
-}
+const userRepository = new UserRepository();
 
 export const getAllUsers = async (req: Request, res: Response) => {
     try {
-        const users = await userService.listUsers();
+        const users = await userRepository.listUsers();
         res.status(200).json(users);
     } catch (err) {
         res.status(500).json({
@@ -34,7 +21,7 @@ export const findUser = async (req: Request, res: Response) => {
     try {
         const userId = parseInt(req.params.id, 10);
 
-        const user = await userService.findUserById(userId);
+        const user = await userRepository.findUserById(userId);
         res.status(200).json(user);
 
     } catch (err) {
@@ -49,7 +36,7 @@ export const findUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
     try {
         const userId = parseInt(req.params.id, 10);
-        const dataUpdated = await userService.updateUserInfo(userId, req.body);
+        const dataUpdated = await userRepository.updateUserInfo(userId, req.body);
 
         res.status(200).json(dataUpdated);
     } catch (err) {
@@ -64,7 +51,7 @@ export const updateUser = async (req: Request, res: Response) => {
 export const deleteUser = async (req: Request, res: Response) => {
     try {
         const userId = parseInt(req.params.id, 10);
-        const userDeleted = await userService.deleteUser(userId);
+        const userDeleted = await userRepository.deleteUser(userId);
 
         res.status(200).json(userDeleted);
     } catch (err) {

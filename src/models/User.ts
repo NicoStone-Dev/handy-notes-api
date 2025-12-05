@@ -1,38 +1,47 @@
-
 import bcrypt from 'bcrypt';
+import { Task } from "./Task.js";
 
 export class User {
     private constructor(
         // Generated and readonly:  
-        public readonly id: number,
-        public readonly userCode: string,
-        public readonly createdAt: Date,
+        readonly id: number,
+        readonly userCode: string,
+        readonly createdAt: Date,
         // Defined through method
         private _email: string,
         private _username: string,
         private _password: string,
+        tasks?: Task[],
     ) { }
 
-    public verifyPassword(password: string): boolean {
-        return bcrypt.compareSync(password, this._password);
-    }
-
-    public get username(){
+    public get username() {
         return this._username;
     }
-    
-    public get email(){
+
+    public get email() {
         return this._email;
     }
 
-    public get password(){
+    public get password() {
         return this._password;
     }
 
-    // Class static method for user creation
-    static async createFromInput(data: UserCreationInputDTO): Promise<User>{
+    static async hashPassword(password: string): Promise<string> {
+        const hashed_password = await bcrypt.hash(password, 10);
 
-        const hashed_password = await bcrypt.hash(data.password, 10);
+        return hashed_password;
+    }
+
+    public static async verifyPassword(login_password: string, persistent_password: string): Promise<boolean> {
+
+        return bcrypt.compareSync(login_password, persistent_password);
+    }
+
+
+    // Class static method for user creation
+    static async createFromInput(data: UserCreationInputDTO): Promise<User> {
+
+        const hashed_password = await User.hashPassword(data.password);
 
         return new User(
             // Passing in the info which the service is not going to supply and using the data from input
@@ -56,19 +65,19 @@ export type UserCreationInputDTO = {
 }
 
 export type UserCreationOutputDTO = {
-    id : number,
+    id: number,
     userCode: string,
-    createdAt : Date,
+    createdAt: Date,
     email: string,
     username: string,
     password: string,
 }
 
-export type UserReadDTO= {
-    id : number,
+export type UserReadDTO = {
+    id: number,
     userCode: string,
     email: string,
-    createdAt : Date,
+    createdAt: Date,
     username: string,
 }
 

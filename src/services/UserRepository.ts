@@ -1,26 +1,8 @@
-import { UserCreationInputDTO, UserReadDTO, UserCreationOutputDTO, userUpdateDTO, User } from '../models/User.js';
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import { UserReadDTO, UserCreationOutputDTO, userUpdateDTO, User } from '../models/User.js';
+import { prisma } from '../prisma.js'; 
 
-const prisma = new PrismaClient;
-
-export class UserService {
-
-    async createUser(userData: UserCreationInputDTO): Promise<UserCreationOutputDTO> {
-        const user = await User.createFromInput(userData);
-
-        const dbUser = await prisma.user.create({
-            data: {
-                email: user.email,
-                username: user.username,
-                password: user.password,
-            }
-        }
-        )
-
-        console.log("Got through here!")
-        return dbUser;
-    }
+// Houses some CRUD operations only, related directly to the database.
+export class UserRepository {
 
     async listUsers(): Promise<UserReadDTO[]> {
         return await prisma.user.findMany();
@@ -31,6 +13,42 @@ export class UserService {
             const dbUser = await prisma.user.findUniqueOrThrow({
                 where: {
                     id: id
+                },
+            }
+            )
+
+            console.log("User Found: ", dbUser)
+
+            return dbUser;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    async findUserByEmail(email: string) {
+        try {
+            const dbUser = await prisma.user.findUniqueOrThrow({
+                where: {
+                    email: email
+                },
+            }
+            )
+
+            console.log("User Found: ", dbUser)
+
+            return dbUser;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    async findUserByUserHashCode(hash: string) {
+        try {
+            const dbUser = await prisma.user.findUniqueOrThrow({
+                where: {
+                    userCode: hash
                 },
             }
             )

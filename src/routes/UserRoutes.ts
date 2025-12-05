@@ -11,8 +11,11 @@ UserRouter.get('/list', userController.getAllUsers);
 // Easily grabbing param values with :param
 UserRouter.get(`/find/:id`, userController.findUser);
 UserRouter.get('/list', userController.getAllUsers);
-UserRouter.post('/create', userController.createUser);
-UserRouter.delete('/delete/:id', userController.deleteUser);
-UserRouter.put('/update', userController.updateUser);
 
+UserRouter.post('/create');
+
+UserRouter.delete('/delete/:id', userController.deleteUser);
+
+UserRouter.put('/update/:id', userController.updateUser);
+    
 export default UserRouter;
