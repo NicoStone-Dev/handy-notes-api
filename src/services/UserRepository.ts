@@ -1,5 +1,5 @@
 import { UserReadDTO, UserCreationOutputDTO, userUpdateDTO, User } from '../models/User.js';
-import { prisma } from '../prisma.js'; 
+import { prisma } from '../prisma.js';
 
 // Houses some CRUD operations only, related directly to the database.
 export class UserRepository {

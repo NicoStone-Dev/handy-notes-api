@@ -1,6 +1,6 @@
 import { UserCreationInputDTO, UserReadDTO, UserCreationOutputDTO, userUpdateDTO, User } from '../models/User';
 import { prisma } from '../prisma.js'; 
-// The sole purpose of this class is to handle user registration, including creation, verification of already existing usernames, password, etc.
+// The sole purpose of this class is to handle user registration, including creation, verification of username and email.
 export class UserRegisterService {
 
     async createUser(userData: UserCreationInputDTO): Promise<UserCreationOutputDTO> {

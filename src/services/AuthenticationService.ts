@@ -14,8 +14,13 @@ const { sign, verify } = jwt;
 export class AuthenticationService {
 
     // This method calls in the createUser method from UserRegisterService and then generates a token and does all the stuff for jwt.
-    async register(userData: UserCreationInputDTO): Promise<{ user: UserCreationOutputDTO; token: string }> {
-
+    async register(userData: UserCreationInputDTO)
+        : Promise<
+            {
+                user: UserCreationOutputDTO;
+                token: string
+            }
+        > {
         // Creates user and saves to DB
         const newUser = await registerService.createUser(userData);
 
@@ -25,17 +30,20 @@ export class AuthenticationService {
             throw new Error("JWT_SECRET is not defined in the environment variables.");
         }
 
-        // Generates token
-        const token = sign(
+        // Generates token for the user logging in
+        const genToken = sign(
             {
                 id: newUser.id,
                 email: newUser.email
             },
             securityKey,
-            { expiresIn: '7d' }
+            { expiresIn: '15d' }
         )
 
-        return { user: newUser, token };
+        return {
+            user: newUser,
+            token: genToken
+        };
     }
 
     async login(email: string, password: string): Promise<any> {
@@ -49,7 +57,7 @@ export class AuthenticationService {
             persistent_user.password
         )
 
-        if(!isValid){
+        if (!isValid) {
             throw new Error("Invalid Credentials!")
         }
 
