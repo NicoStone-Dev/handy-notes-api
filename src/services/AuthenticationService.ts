@@ -22,7 +22,7 @@ export class AuthenticationService {
             }
         > {
         // Creates user and saves to DB
-        const newUser = await registerService.createUser(userData);
+        const newUser = await registerService.registerUser(userData);
 
         const securityKey = process.env.JWT_SECRET;
 

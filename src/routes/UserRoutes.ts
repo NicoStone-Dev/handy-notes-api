@@ -1,21 +1,22 @@
 import { Router } from "express";
-import * as userController from '../controllers/UserController.js'
+import * as userController from '../controllers/UserController.js';
+import { requireAuthentication } from "../controllers/middleware/AuthenticationMW.js";
 
 const UserRouter = Router();
 
 UserRouter.get('/hello', (request, response) => {
     response.send('Hello, World!');
-})
+});
 
-UserRouter.get('/list', userController.getAllUsers);
+// Gotta define public, protected and user defined routes.
 // Easily grabbing param values with :param
-UserRouter.get(`/find/:id`, userController.findUser);
-UserRouter.get('/list', userController.getAllUsers);
 
-UserRouter.post('/create');
+// UserRouter.post('/register');
 
-UserRouter.delete('/delete/:id', userController.deleteUser);
+// UserRouter.post('/profile/:userCode');
 
-UserRouter.put('/update/:id', userController.updateUser);
-    
+UserRouter.delete('/delete/:id', requireAuthentication, userController.deleteUser);
+
+UserRouter.put('/update/:id', requireAuthentication, userController.updateUser);
+
 export default UserRouter;

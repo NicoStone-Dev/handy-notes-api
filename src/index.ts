@@ -11,7 +11,7 @@ app.use(express.json());
 
 // Defining the base url for each route
 //app.use('/app/task/', TaskRouter); not to be used yet
-app.use('/api/users/', UserRouter);
+app.use('/api/user/', UserRouter);
 
 app.listen(PORT, () => {
     console.log(`Server started on port: ${PORT}`);
