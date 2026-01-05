@@ -2,10 +2,11 @@ import { User, UserCreationInputDTO, UserCreationOutputDTO } from '../models/Use
 import { UserRegisterService } from './UserRegisterService.js';
 import jwt from 'jsonwebtoken';
 import { UserRepository } from './UserRepository.js';
+import { prisma } from '../prisma.js';
 
 // Services to be fed upon
 const userRepo = new UserRepository();
-const registerService = new UserRegisterService()
+const registerService = new UserRegisterService();
 
 // Both of the methods we're using from jwt are put out below
 const { sign, verify } = jwt;
@@ -72,5 +73,31 @@ export class AuthenticationService {
         }
 
         return verify(token, securityKey);
+    }
+
+    async passwordUpdate(email: string, password: string, newPassword: string) {
+        try {
+            const exists = await userRepo.existsByEmail(email);
+
+            if (exists) {
+                const user = await userRepo.findUserByEmail(email);
+
+                // Verifying input password
+                if (User.verifyPassword(password, user.password)) {
+
+                    // In turn allowing the update on such characteristic
+                    return prisma.user.update({
+                        where: {
+                            email: email,
+                        },
+                        data: {
+                            password: newPassword,
+                        }
+                    })
+                } else throw new Error();
+            }
+        } catch (err) {
+            console.log(err)
+        }
     }
 }

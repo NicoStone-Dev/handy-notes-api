@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+ import bcrypt from 'bcrypt';
 import { Task } from "./Task.js";
 
 export class User {
@@ -32,7 +32,7 @@ export class User {
         return hashed_password;
     }
 
-    public static async verifyPassword(login_password: string, persistent_password: string): Promise<boolean> {
+    public static verifyPassword(login_password: string, persistent_password: string): boolean {
 
         return bcrypt.compareSync(login_password, persistent_password);
     }
@@ -81,7 +81,7 @@ export type UserReadDTO = {
     username: string,
 }
 
-export type userUpdateDTO = {
+export type UserUpdateDTO = {
     username?: string,
     email?: string,
 }

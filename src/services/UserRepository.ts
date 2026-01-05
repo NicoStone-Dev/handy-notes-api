@@ -1,4 +1,4 @@
-import { UserReadDTO, UserCreationOutputDTO, userUpdateDTO } from '../models/User.js';
+import { UserReadDTO, UserCreationOutputDTO } from '../models/User.js';
 import { prisma } from '../prisma.js';
 
 // Houses some CRUD operations only, related directly to the database.
@@ -56,46 +56,6 @@ export class UserRepository {
             console.log("User Found: ", dbUser)
 
             return dbUser;
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }
-
-    async updateUserInfo(id: number, userData: userUpdateDTO): Promise<UserCreationOutputDTO> {
-        try {
-            await this.findUserById(id);
-
-            const updatedUser = prisma.user.update({
-                where: {
-                    id: id
-                },
-                data: {
-                    username: userData.username,
-                    email: userData.email,
-                }
-            }
-            )
-
-            return updatedUser;
-        } catch (error) {
-            console.log(error);
-
-            throw error;
-        }
-    }
-
-    async deleteUser(id: number): Promise<UserCreationOutputDTO> {
-        try {
-            await this.findUserById(id);
-
-            const deletion = await prisma.user.delete({
-                where: {
-                    id: id
-                },
-            })
-
-            return deletion;
         } catch (error) {
             console.log(error);
             throw error;

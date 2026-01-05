@@ -22,7 +22,7 @@ export const requireAuthentication = (
     // Grabs the token of passed through the header
     let hToken = req.headers.authorization;
 
-    // Checkes if the token actually exists otherwise throws error.
+    // Checks if the token actually exists otherwise throws error.
     if (!hToken || !hToken.startsWith("Bearer ")) {
         res.status(401).json({
             Error: "NO_TOKEN_PROVIDED"
@@ -31,9 +31,10 @@ export const requireAuthentication = (
         throw Error("NO_TOKEN_PROVIDED");
     }
 
-    // Removing "Bearer " from string
-    hToken.split(' ')[1];
+    // Removing "Bearer " from token string
+    const token = hToken.split(' ')[1];
 
+    // Pulling out server's secret key
     const secretKey = process.env.JWT_SECRET;
 
     if (!secretKey) {
@@ -42,7 +43,8 @@ export const requireAuthentication = (
 
     // Payload 
     try {
-        const payload = verify(hToken, secretKey) as {
+        // Checks if token provided is right for the given operation
+        const payload = verify(token, secretKey) as {
             id: number,
             email: string
         }
