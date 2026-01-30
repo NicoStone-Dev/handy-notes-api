@@ -1,4 +1,4 @@
- import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { Task } from "./Task.js";
 
 export class User {
@@ -32,9 +32,9 @@ export class User {
         return hashed_password;
     }
 
-    public static verifyPassword(login_password: string, persistent_password: string): boolean {
+    public static async verifyPassword(login_password: string, persistent_password: string): Promise<Boolean> {
 
-        return bcrypt.compareSync(login_password, persistent_password);
+        return await bcrypt.compare(login_password, persistent_password);
     }
 
 

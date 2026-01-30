@@ -1,6 +1,6 @@
 import { UserCreationInputDTO, UserCreationOutputDTO, User } from '../models/User';
 import { prisma } from '../prisma.js';
-import { UserRepository } from './UserRepository';
+import { UserRepository } from './repos/UserRepository';
 import validator from 'validator';
 import { ValidationError } from '../shared/errors/ValidationError';
 
@@ -22,7 +22,7 @@ export class UserRegisterService {
         if (validator.isEmpty(email)) {
             errors.push({
                 field: "EMAIL",
-                error: "EMPTY_FIELD"
+                error: "EMPTY_FIELD" 
             })
         }
 
@@ -71,7 +71,7 @@ export class UserRegisterService {
         return errors;
     }
 
-    // Min of 8 characteres of which must contain at least 1 lowercaser, 1 uppercase and a symbol such as '@'
+    // Min of 8 characteres of which must contain at least 1 lowercase, 1 uppercase and a symbol such as '@'
     private validatePassword(password: string): ValidationErrorType[] {
         const debugErrors = [];
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -83,7 +83,7 @@ export class UserRegisterService {
         if (!passwordRegex.test(password)) {
             debugErrors.push("REGEX_RULES_NOT_MET");
         }
-
+        
         if (debugErrors.length > 0) {
             return [{ field: "PASSWORD", error: "INVALID_PASSWORD" }];
         }
@@ -94,7 +94,7 @@ export class UserRegisterService {
     private async validateRegistration(email: string, username: string, password: string): Promise<ValidationResultType> {
         const errors: ValidationErrorType[] = [];
 
-        // We await just the async methods 
+        // We await just the async methods
         errors.push(...await this.validateEmail(email));
         errors.push(...await this.validateUsername(username));
         errors.push(...this.validatePassword(password));
@@ -106,6 +106,7 @@ export class UserRegisterService {
     }
 
     async registerUser(userData: UserCreationInputDTO): Promise<UserCreationOutputDTO> {
+        
         const checkDataValidation = await this.validateRegistration(userData.email, userData.username, userData.password)
 
         if (!checkDataValidation.valid) {

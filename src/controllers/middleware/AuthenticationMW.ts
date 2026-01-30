@@ -7,7 +7,7 @@ declare global {
         interface Request {
             user?: {
                 id: number,
-                email: string,
+                userCode: string,
             }
         }
     }
@@ -22,15 +22,14 @@ export const requireAuthentication = (
     // Grabs the token of passed through the header
     let hToken = req.headers.authorization;
 
-    // Checks if the token actually exists otherwise throws error.
-    if (!hToken || !hToken.startsWith("Bearer ")) {
-        res.status(401).json({
-            Error: "NO_TOKEN_PROVIDED"
-        })
+    // Checks if the token actually exists otherwise throws a response error.
 
-        throw Error("NO_TOKEN_PROVIDED");
+    if (!hToken?.startsWith("Bearer ")) {
+        return res.status(401).json({
+            Error: "NOT_AUTHENTICATED"
+        });
     }
-
+    
     // Removing "Bearer " from token string
     const token = hToken.split(' ')[1];
 
@@ -38,7 +37,9 @@ export const requireAuthentication = (
     const secretKey = process.env.JWT_SECRET;
 
     if (!secretKey) {
-        throw Error("JWT_SECRET IS NOT FOUND WITHIN ENVIRONMENT VARIABLES");
+        return res.status(404).json({
+            Error: "AUTHENTICATION_KEY_NOT_FOUND"
+        })
     }
 
     // Payload 
@@ -46,21 +47,19 @@ export const requireAuthentication = (
         // Checks if token provided is right for the given operation
         const payload = verify(token, secretKey) as {
             id: number,
-            email: string
+            email: string,
+            userCode: string
         }
 
         // Then we pass in the data from the user trying to access into the request
         req.user = {
             id: payload.id,
-            email: payload.email
+            userCode: payload.userCode
         }
-
+        next();
     } catch (error) {
-        res.status(401).json({
+        return res.status(401).json({
             Error: "TOKEN_PROVIDED_NOT_VALID"
         })
-
-        throw Error("TOKEN_PROVIDED_NOT_VALID");
     }
-
 }

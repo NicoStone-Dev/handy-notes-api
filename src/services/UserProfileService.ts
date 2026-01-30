@@ -1,16 +1,21 @@
 import { prisma } from "../prisma";
-import { UserRepository } from "./UserRepository";
-import { UserUpdateDTO, UserCreationOutputDTO } from "../models/User";
+import { UserRepository } from "./repos/UserRepository";
+import { UserCreationOutputDTO } from "../models/User";
 
 const userRepo = new UserRepository();
 
 export class UserProfileService {
 
+    /*  
+        Prisma has an error of code P2002 which is the universal "Stop! Duplicate found"
+        It is a must for such errors to be interpreted and thrown in ANY operation 
+        which sets unique variables, it's own error class must be built! 
+    */
     async updateUserEmail(id: number, newEmail: string): Promise<UserCreationOutputDTO> {
         try {
             await userRepo.findUserById(id);
 
-            const updatedUser = prisma.user.update({
+            const updatedUser = await prisma.user.update({
                 where: {
                     id: id
                 },
@@ -27,11 +32,12 @@ export class UserProfileService {
         }
     }
 
+    // Should implement regex rules for username through creation and update
     async updateUsername(id: number, newUsername: string): Promise<UserCreationOutputDTO> {
         try {
             await userRepo.findUserById(id);
 
-            const updatedUser = prisma.user.update({
+            const updatedUser = await prisma.user.update({
                 where: {
                     id: id
                 },

@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { UserRepository } from "../services/UserRepository.js";
 import { UserRegisterService } from "../services/UserRegisterService.js";
 import { UserProfileService } from "../services/UserProfileService.js";
 import { AuthenticationService } from "../services/AuthenticationService.js";
@@ -24,7 +23,7 @@ export const updateUsername = async (req: Request, res: Response) => {
         res.status(200).json(updatedUser);
     } catch (err) {
         res.status(400).json({
-            error_mesage: 'UPDATE_FAILED',
+            error_message: 'UPDATE_FAILED',
             // Instead of leaving the whole stack trace which would be unsafe
             error_type: err instanceof Error ? err.message : 'Unknown error'
         })
@@ -37,47 +36,16 @@ export const updateEmail = async (req: Request, res: Response) => {
         const userId = req.user?.id
         if (!userId) {
             return res.status(401).json({
-                error_message: 'NOT_AUTHENTICATED'
+                error_message: 'UNAUTHORIZED_ACTION'
             });
         }
         const newEmail = req.body.email;
-
         const updatedUser = await userProfileService.updateUserEmail(userId, newEmail);
 
         res.status(200).json(updatedUser);
     } catch (err) {
         res.status(400).json({
-            error_mesage: 'UPDATE_FAILED',
-            error_type: err instanceof Error ? err.message : 'Unknown error'
-        })
-        console.log(err);
-    }
-}
-
-export const updatePassword = async (req: Request, res: Response) => {
-    try {
-        const email = req.user?.email;
-        const password = req.body.currentPassword;
-        const newPassword = req.body.newPassword;
-
-        if (!email) {
-            return res.status(401).json({
-                error_message: 'NOT_AUTHENTICATED'
-            });
-        }
-
-        if (!(newPassword && password)) {
-            return res.status(400).json({
-                error_message: 'PASSWORD_REQUIRED'
-            });
-        }
-
-        const updatedUser = await authService.passwordUpdate(email, password, newPassword);
-
-        res.status(200).json(updatedUser);
-    } catch (err) {
-        res.status(400).json({
-            error_mesage: 'UPDATE_FAILED',
+            error_message: 'UPDATE_FAILED',
             error_type: err instanceof Error ? err.message : 'Unknown error'
         })
         console.log(err);
@@ -99,17 +67,24 @@ export const deleteUserProfile = async (req: Request, res: Response) => {
         res.status(200).json(deletedProfile)
     } catch (err) {
         res.status(400).json({
-            error_mesage: 'UPDATE_FAILED',
+            error_message: 'UPDATE_FAILED',
             error_type: err instanceof Error ? err.message : 'Unknown error'
         })
         console.log(err);
     }
 }
 
+/*
+    Creates user, expecting:
+    email: string;
+    username: string;
+    password: string;
+    From the req.body
+*/
 export const createUserProfile = async (req: Request, res: Response) => {
     try {
-        const newUser = await userRegister.registerUser(req.body);
-        res.status(201).json(newUser);
+        const newUser = await authService.register(req.body);
+        res.status(201).json(newUser.token);
     } catch (err) {
         res.status(500).json({
             error_message: 'FAILED_TO_CREATE_USER',

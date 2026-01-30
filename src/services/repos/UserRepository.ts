@@ -1,5 +1,5 @@
-import { UserReadDTO, UserCreationOutputDTO } from '../models/User.js';
-import { prisma } from '../prisma.js';
+import { UserReadDTO } from '../../models/User.js';
+import { prisma } from '../../prisma.js';
 
 // Houses some CRUD operations only, related directly to the database.
 export class UserRepository {
@@ -88,7 +88,17 @@ export class UserRepository {
                 username: username
             }
         })
-        
+
+        return user !== null;
+    }
+
+    async existsByUserHashCode(userCode: string): Promise<boolean> {
+        const user = await prisma.user.findUnique({
+            where: {
+                userCode: userCode
+            }
+        })
+
         return user !== null;
     }
 }

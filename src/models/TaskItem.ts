@@ -3,8 +3,9 @@ import { Task } from "./Task.js";
 export class TaskItem {
     constructor(
         readonly id: number,
+        readonly createdAt: Date,
         private _description: string,
-        private _checkedOut: boolean,
+        private _completion: boolean,
         private _owningTask: Task,
     ) { }
 
@@ -12,8 +13,8 @@ export class TaskItem {
         return this._description
     }
 
-    get checkedOut() {
-        return this._checkedOut;
+    get completion() {
+        return this._completion;
     }
 
     get owningTask() {
@@ -24,7 +25,15 @@ export class TaskItem {
         this._description = description;
     }
 
-    set checkedOut(checks: boolean) {
-        this.checkedOut = checks;
+    set completion(checks: boolean) {
+        this.completion = checks;
     }
 }
+
+export type TaskItemDTO =
+    {
+        description: string,
+        completion: boolean,
+        id: number,
+        owningTaskId: number
+    }
